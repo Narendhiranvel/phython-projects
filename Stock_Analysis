@@ -1,0 +1,177 @@
+# import required libraries
+import yfinance as yf
+from transformers import pipeline
+
+# this is an empty fuction
+def calc_returns(prices):
+    returns_list = [] 
+    for i in range(1, len(prices)):
+        # Calculation formula 
+        return_value = prices[i] / prices[i - 1] - 1
+        # Rounding the result
+        returns_list.append(round(return_value, 2))
+    # Returning the calculated list
+    return returns_list
+
+import yfinance as yf
+
+# Function to calculate periodic returns
+def calc_returns(prices):
+    returns = []
+    for i in range(1, len(prices)):
+        return_value = (prices[i] - prices[i - 1]) / prices[i - 1]
+        returns.append(round(return_value, 6))
+    return returns
+
+# Function to fetch stock data from Yahoo Finance
+def fetch_stock_data(ticker, start_date, end_date):
+    stock_data = yf.download(ticker, start=start_date, end=end_date)
+    return stock_data
+
+# Declaring Salesforce stock as ticker and passing start date and end date
+ticker = 'CRM'
+start_date = '2024-01-24'
+end_date = '2024-02-06'
+
+# Fetching stock data for 2 week time period
+stock_data = fetch_stock_data(ticker, start_date, end_date)
+
+# Extracting closing price from stock_data and storing it to a list
+closing_prices = stock_data['Close'].tolist()
+
+# Printing closing prices
+print("\nClosing Prices:")
+print(closing_prices)
+
+# Calculating returns using calc_returns() function
+returns = calc_returns(closing_prices)
+
+# Printing returns
+print("\nReturns:")
+print(returns)
+
+# Analysis and Explanation
+print("\nAnalysis and Explanation:")
+print("The trend in stock prices:")
+print("The closing prices of Salesforce (CRM) stock over the 2-week period are as follows:", closing_prices)
+print("\nThe trend in returns:")
+print("The calculated returns based on the closing prices are as follows:", returns)
+print("\nExplanation:")
+print("By analyzing the closing prices and returns, you can observe how the stock has performed over the specified period.")
+
+# this is an empty fuction
+def calc_simple_moving_average(prices, windows_size):
+    moving_averages = []  # Changed variable name from 'averages' to 'moving_averages'
+    for i in range(len(prices) - window_size + 1):
+        average_i = sum(prices[i:i + window_size]) / window_size
+        moving_averages.append(round(average_i, 2))
+    return moving_averages
+
+# code for above analysis goes here
+# Function to calculate the simple moving average
+def calc_simple_moving_average(prices, period_length):
+    moving_averages = []
+    for i in range(len(prices) - period_length + 1):
+        average = sum(prices[i:i + period_length]) / period_length
+        moving_averages.append(round(average, 2))
+    return moving_averages
+
+# Setting the period length for simple moving average
+period_length = 4
+
+# Specifying the start and end dates for fetching stock data
+start_date = '2024-01-06'
+end_date = '2024-02-06'
+
+# Fetching historical stock data for a specific time period
+stock_data = fetch_stock_data(ticker, start_date, end_date)
+
+# Extracting closing prices from stock_data and converting to a list
+closing_prices_month = stock_data['Close'].tolist()
+
+# Calculating simple moving averages using the specified period length
+moving_averages = calc_simple_moving_average(closing_prices_month, period_length)
+
+# Printing the closing prices
+print("\nClosing Prices:")
+print(closing_prices_month)
+
+# Printing the calculated simple moving averages
+print("\nSimple Moving Averages:")
+print(moving_averages)
+
+# Analysis and Explanation
+print("\nAnalysis and Explanation:")
+print("The trend in stock prices:")
+print("The closing prices of Salesforce (CRM) stock over the specified period are as follows:", closing_prices_month)
+print("\nThe trend in simple moving averages:")
+print("The calculated simple moving averages based on the closing prices are as follows:", moving_averages)
+print("\nExplanation:")
+print("Simple moving averages provide a smoothed representation of stock price trends. By analyzing both stock prices and moving averages, you can gain insights into the overall trend and potential turning points in the stock's performance.")
+
+# code for above analysis goes here
+ticker = 'CRM'
+
+# Function to fetch recent news headlines for a given stock ticker
+def fetch_news(ticker):
+    # Instantiate a Ticker object from yfinance for the given stock ticker
+    stock_info = yf.Ticker(ticker)
+    
+    # Retrieve recent news headlines
+    news = stock_info.news
+    
+    # Extract titles from the news articles
+    titles = [article['title'] for article in news]
+    
+    return titles
+
+# Function to analyze sentiment for a list of news titles
+def analyze_sentiment(news_titles):
+    # Instantiate a sentiment analysis pipeline
+    sentiment_analyzer = pipeline('sentiment-analysis')
+    
+    # Analyze sentiment for each news title
+    sentiments = sentiment_analyzer(news_titles)
+    
+    return sentiments
+
+# Fetch news titles for the specified stock ticker
+titles = fetch_news(ticker)
+
+# Analyze sentiment for the fetched news titles
+sentiments = analyze_sentiment(titles)
+
+# Print news titles
+print("News Titles:")
+for title in titles:
+    print("- " + title)
+
+# Print sentiment analysis results
+print("\nSentiments:")
+for sentiment in sentiments:
+    # Convert sentiment score to float
+    score = float(sentiment['score'])
+    
+    # Print sentiment label and score
+    print("- Emotion:", sentiment['label'], "| Score:", score)
+
+# Explain the sentiment in news
+positive_count = sum(1 for s in sentiments if s['label'] == 'POSITIVE')
+negative_count = sum(1 for s in sentiments if s['label'] == 'NEGATIVE')
+neutral_count = sum(1 for s in sentiments if s['label'] == 'NEUTRAL')
+
+total_news = len(titles)
+
+print("\nSentiment Explanation:")
+print(f"Total News: {total_news}")
+print(f"Positive News: {positive_count} ({(positive_count/total_news)*100:.2f}%)")
+print(f"Negative News: {negative_count} ({(negative_count/total_news)*100:.2f}%)")
+print(f"Neutral News: {neutral_count} ({(neutral_count/total_news)*100:.2f}%)")
+
+# Provide an explanation of the sentiment in the news
+if positive_count > negative_count:
+    print("\nThe overall sentiment in the news about Salesforce is positive. This positivity may be attributed to favorable financial results, positive business developments, or optimistic market trends.")
+elif negative_count > positive_count:
+    print("\nThe overall sentiment in the news about Salesforce is negative. This negativity may be linked to poor financial performance, unfavorable business events, or concerning developments.")
+else:
+    print("\nThe overall sentiment in the news about Salesforce is neutral. The news appears to consist of routine updates or information without a significant impact on the company's outlook.")
